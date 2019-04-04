@@ -1,0 +1,263 @@
+*파이썬 배포하기
+내가 만든 함수를 웹으로 올리는 거야
+잘 만들어놓고 고객에게 전달하지 못하면 의미가 없으니깐
+
+
+*python setup.py sdist(source distribute) 
+
+=====================================
+
+*pandas 활용한 데이터 조작
+
+-피피티에서 데이터설명
+키가 1 이면 기본키 -> 중복을 허용하지 않겠다
+데이터 설명할 때는 실제 컬럼명, 컬럼타입, 컬럼설명, 키 종류, 길이, 구분(실제판매지역 등) 모두 상세히 써줘야
+
+=====================================================================
+주피터에서
+-astype : 데이터 자료형바꾸기 
+전체 자료 자료형: selloutData = selloutData.astype(str)
+특정 컬럼: selloutData["QTY"] = selloutData["QTY"].astype(float)
+
+-dtypes 타입확인은 
+selloutData.dtypes
+======================================================================
+
+큰 1번 데이터조작하기 
+-.columns 컬럼명 조회하기 
+데이터명.columns
+
+-데이터명.columns.get_loc 원하는 컬럼의 위치 loc = location
+
+
+-원하는 컬럼조회하기 
+1)데이터프레임명[['컬럼명1', '컬렴명2']] -> 대괄호 두개 
+2)filter 함수
+데이터프레임명.filter(items=['컬럼명','컬럼명2'])
+
+
+
+-원하는 조건 추가해서 컬럼조회하기 ; inplace 적용안됨
+1)데이터프레임명[(조건식1)&(조건식2)]
+2)데이터프레임명.query('조건식1')
+
+
+==============================================
+
+-iloc : 인덱스 활용하여 조회하기
+
+
+데이터프레임명.iloc[:.:]
+
+#컬럼 검색을 리스트형으로 _ 근데 이렇게 하면 컬럼이 바뀌면 문제가 생김
+cuData.iloc[0:5,[1,3]]
+
+#숫자를 입력하지 않고 리스트형으로 작성해주면 데이터상에서 컬럼이 바껴도 괜찮음 
+특정 컬럼의 location을 변수에 할당해서 검색
+
+stColNo = cuData.columns.get_loc("STATENAME")
+genColNo = cuData.columns.get_loc("GENDER")
+cuData.iloc[0:3,[stColNo,genColNo]]
+
+
+
+
+-데이터프레임명.loc[ , ]
+
+특정 컬럼의 location 필요없이 
+컬럼명으로 바로 조회 
+
+cuData.iloc[0:3,["STATENAME","GENDER"]
+
+=========================================================
+
+
+-np.where 는 조건에 걸리는 무언가를 바꿀 때
+
+1)np.where(데이터프레임명["컬럼명"] < 조건, 조건 해당할 때 조치, 해당하지 않을 때 조치_데이터프레임명["컬럼명"] 쓰면 그대로 출력)
+
+2)조건 여러개 하고 싶으면  연속적으로 입력해줘    <조건 해당하지 않을 때 조치는 한번만 쓰면 되나보다>
+csData["product_age_new"] = np.where(csData["PRODUCTAGE"]<1,1,\
+                            np.where(csData["PRODUCTAGE"]<2,2,\
+                            np.where(csData["PRODUCTAGE"]<3,3,5)))
+
+
+줄 끝의 \ 표시 의미 
+아랫줄과 연결하여 코드진행
+
+3)바꿔서 새로운 컬럼 만들고 넣어줘 
+selloutData["QTY_NEW"] = np.where(selloutData["QTY"] < 0,0,selloutData["QTY"])
+ 조회만하려면 데이터프레임명[(조건)]
+
+
+4) 조회 :  데이터프레임명[(조건)]
+   기존 데이터값 가져와서 
+   새로운 컬럼 만들기 : 데이터프레임명["컬럼명"] = 데이터프레임명.컬럼명.조건 ex)selloutData["YEAR"] = selloutData.YEARWEEK.str[0:4]  
+   새로운 데이터프레임 만들기 : 새로운 데이터프레임명 = 데이터프레임명[(조건)] 
+   
+   #1.교수님 방법_ 자료형 바꾸지 않고 만들기  
+   refinedSelloutData = selloutData[selloutData.WEEK.astype(float) <= 52]
+
+   #2.내 방법_ 자료형 변환 2번 
+   selloutData["WEEK"].astype(float)
+   selloutData["WEEK"] = selloutData["WEEK"].astype(float)
+   refinedData = selloutData[(selloutData.WEEK <= 52)]
+================
+함수로 조회하는 방법도 있음
+
+1) 함수 만들기 
+ def refining(df):
+    if df["컬럼명"] < 조건1:
+        return 돌려줄 값1
+    elif df["컬럼명"] < 조건2 :
+        return 돌려줄 값2
+    else:
+        return 돌려줄 값3
+
+
+2) 함수 적용하기
+ 데이터프레임명["컬럼명"] = 데이터프레임명.apply(refining, axis = 1) axis = 0 이면 x축에 추가<열로 추가>
+
+
+
+
+ex) def refining(df):
+    if df["PRODUCTAGE"] < 1:
+        return 1
+    elif df["PRODUCTAGE"] < 2 :
+        return 2
+    else:
+        return 5
+
+csData["PRODUCTAGE_NEW2"] = csData.apply(refining, axis = 1)
+
+
+일반적으로는 np.where 를 사용 
+하지만 상급자가 뭘 선호할 지 모르므로 두 개 다 알아야 해
+=================================================================================
+
+
+*데이터 정렬하기
+
+##미리 정렬 기준이 될 키를 변수로 정하고 사용해 -> 깔끔 
+sortKey = ["CUSTID","AVERAGEPRICE"]
+
+## csData.sort_values(sortKey, ascending=True, inplace = True) -> 변수를 최소화 하는 방법. 단, 변수를 바꿨으므로 원래 데이터를 찾으려면 다시 import 해야해 
+
+## 지금 까지는 csSortedData = csData.sort_values(sortKey) 이런 식으로 담아줬었다고, 왜냐면 안 담아주면 정렬된 값이 저장이 안되니깐 
+
+
+
+===================================================================================
+
+
+*groupby
+기존 데이터에서 그룹핑을 통해 의미있는 정보를 얻어내기 위해 사용하는 함수 
+-> 그룹단위의 분리에 따라 분석의 레벨이 달라짐
+ so, 그냥 데이터 주세요! 가 아니라 어떤 데이터 주세요 를 해야함
+
+데이터프레임명.groupby([''])   >>>>>>>>>>>>>>>>>> 정리
+
+
+원하는 함수 
+
+
+
+ex)
+#그룹키를 지정하고 사용
+groupKey = ["CUSTTYPE"] 
+groupData = csData.groupby(groupKey).max()[["QTY_NEW"]]
+
+
+groupby 함수는 종료 후 
+reset_index() 로 인덱스를 초기화 시켜야 
+
+
+*groupby 심화 _ 다중집계
+그룹키가 두개 
+
+
+
+
+=================================================================================
+
+*rolling : 이동평균  = 롤링평균
+
+데이터프레임명.rolling(windows = 5, center = False 또는 True).mean()
+
+ex)
+csData["TEST"] = csData["PRODUCTAGE"].rolling(window=6, center = False).mean()
+
+
+center=False 면 window 갯수만큼의 앞 값들 평균 구함
+center=True 면 전체 데이터 중 window 갯수 -1 개만큼 NaN 값이 생김 위아래 반절씩
+
+
+min_periods = 1 이면 window 값 관계없이 값 구할 수 있음 %%캡쳐사진 있음
+
+=================================================================================
+
+큰2번.데이터합치기
+
+1) 속성값을 추가하는 경우
+: 두 개의 독립된 데이터셋이 있을 때, 겹치는 컬럼이 있다면 합쳐서 관리할 수 있음 
+
+INNER 조인
+양쪽 모두에  키가 있는 것만 합쳐줘 
+교집합 영역의 항목 데이터가 전부 같아야 해 -> 한쪽에 없으면 항목까지 사라져 버린다구 
+만일 한쪽에 A03 없다면 안돼 합쳐진 거에는 사라져버림 
+
+LEFT 조인 
+분석하는 데이터(왼쪽 데이터)의 키를 기준으로 다른 데이터에도 겹치는 키가 있는 데이터만 추가(원데이터가 왼쪽에) 
+왼쪽 데이터의 키들은 무조건 살아남음
+=> 분석하는 데이터을 왼쪽에 두고 LEFT JOIN 을 하면 내 데이터는 절대 잃지 않아!!! -> JOIN 컨셉을 제대로 잡는 게 중요해 
+
+
+mergeKey = ["REGIONID","PRODUCT","YEAR"]   
+mergedData = pd.merge(selloutData,sortedData,\
+             left_on = mergeKey, right_on = mergeKey)\       -- mergeKey 하나씩 쓰면 헷갈리니깐 mergeKey 로 미리 리스트를 만들어줌
+             [["REGIONID","PRODUCT","YEAR","YEARWEEK","QTY_MEAN","QTY_STD"]]
+
+
+
+=================================================================================
+
+<실수>
+
+0. 팁) 인덱스 생각할 때 특정 위치부터 끝까지면 
+       [n:] 으로 표현 
+
+0-1. 팁) str: 파이썬에서 String 아니고 str 
+0-2. 팁) shift + tab : 함수 내에서 사용하여 함수의 설정 정보 알 수 있음   
+
+
+1. 파일불러올 때, 파일 주소에 큰따옴표! 두번 실수...
+selloutData = pd.read_csv("../dataset/kopo_channel_seasonality_new.csv")
+selloutData
+
+2. True /  False 
+   T, F 는 대문자로!!!
+
+3. &, | : 조건 쓸 때  하나씩 
+
+4. 다중리스트 
+groupKey2 = ['REGIONID','PRODUCT']
+groupKey2 = [['REGIONID','PRODUCT']]
+
+둘이 달라  
+groupKey2[0] 이 위는 'REGIONID'
+                아래는 ['REGIONID','PRODUCT']
+groupData2 = selloutData.\
+groupby([groupKey2]).agg(['mean','std'])['QTY']
+
+std() 는 표준편차
+
+
+5.롤링평균 = 이동평균 
+
+
+==================
+
+토드에서 EDIT 모드, + 후에는 초록색 체크버튼 클릭
+
+
