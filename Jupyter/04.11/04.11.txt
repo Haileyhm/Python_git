@@ -1,6 +1,7 @@
 *file 을 가져와서 pandas로 분석한 다음 다른 사람한테 넘겨
 
 *dom 구조 : html 에서 document. <뭐 인가봐>
+document object model? 
 
 *교수님은 '데이터전처리'가 가장 중요하대 
 
@@ -57,10 +58,13 @@ filteredData.groupby(groupKey)[["NEW_QTY"]].mean()
 -서로 다른 방식으로 정제된 두 개의 데이터를 합쳐줄 때 필요한 함수
 ex. 머신러닝 분석, 다른 분석
 
-
-
-
-
 =======================
 <실수>
-이동평균 구할 때, window !! windowsssss 는 틀림 
+1.이동평균 구할 때, window !! windowsssss 는 틀림 
+2.자료형 변경 시에 변경한 것을 변수에 담아줘야 함
+  변경만 하면 적용이 안됨
+
+
+
+
+
