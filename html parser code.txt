@@ -1,0 +1,4 @@
+'<a href="/downManager?bbsid=BBS0069&amp;no=137618" target="invisible" title="새창열기"><img alt="아래아한글 문서" src="/images/common/ico_file_hangul.gif"/> </a>'
+b=
+a.split('"')[1].split("amp;")[0]
++ a.split('"')[1].split("amp;")[1]

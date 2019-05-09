@@ -1,0 +1,26 @@
+415	
+한국감정원	
+아파트거래통계	414_아파트거래통계								
+API or 
+
+
+
+DATA	
+한국감정원
+부동산 정보
+아파트 거래 건수 조회	http://openapi.kab.co.kr/OpenAPI_ToolInstallPackage/service/rest/AptTradingStateSvc
+
+serviceKey=
+
+reLGvmltE7tpn%2FrvIvojisQVFR2EREjegZw6W2OJE1sJTT2OWX4nbUDZ5V%2FNTmKKixtPrSX3CFrzHanlAYITew%3D%3D	serviceKey=reLGvmltE7tpn%2FrvIvojisQVFR2EREjegZw6W2OJE1sJTT2OWX4nbUDZ5V%2FNTmKKixtPrSX3CFrzHanlAYITew%3D%3D
+
+api
+
+xml	
+
+https://www.data.go.kr/comm/file/download.do?atchFileId=FILE_000000001320310&fileDetailSn=0	
+docx
+
+TB_OD10414.py
+
+TB_OD10414_yyyymm.csv
